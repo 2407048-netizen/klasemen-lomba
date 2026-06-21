@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Klasemen Kejuaraan{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+
+    <!-- ===== HERO HEADER ===== -->
+    <section class="hero-header mb-5">
+        <div class="hero-content">
+            <!-- Logo Madrasah -->
+            <div class="hero-logo-wrap">
+                <img src="{{ url_for('static', filename='logo-mdt.png') }}" 
+                     alt="Logo MDT" 
+                     class="hero-logo"
+                     onerror="this.style.display='none'">
+                <p class="hero-madrasah-name">MDT Miftahul Hidayah</p>
+            </div>
+
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                LIVE RANKING
+            </div>
+
+            <h1 class="hero-title">
+                <span class="hero-gradient">JUARA SEMENTARA</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Klasemen real-time para peserta kompetisi. Pantau peringkat terbaru setiap saat.
+            </p>
+        </div>
+        <div class="hero-decoration">
+            <div class="deco-ring ring-1"></div>
+            <div class="deco-ring ring-2"></div>
+            <div class="deco-trophy"><i class="bi bi-trophy-fill"></i></div>
+        </div>
+    </section>
+
+    <!-- ===== STATISTICS CARDS ===== -->
+    <section class="stats-row mb-5">
+        <div class="row g-3 g-lg-4">
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Peserta</span>
+                        <span class="stat-value" data-count="{{ total_peserta }}">{{ total_peserta }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-amber">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Skor</span>
+                        <span class="stat-value" data-count="{{ total_skor }}">{{ total_skor }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-green">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Skor Tertinggi</span>
+                        <span class="stat-value" data-count="{{ skor_tertinggi }}">{{ skor_tertinggi }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-purple">
+                        <i class="bi bi-calculator"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Rata-rata Skor</span>
+                        <span class="stat-value">{{ rata_rata }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PODIUM ===== -->
+    {% if podium|length >= 3 %}
+    <section class="podium-section mb-5">
+        <div class="section-header">
+            <div class="section-icon"><i class="bi bi-star-fill"></i></div>
+            <div>
+                <h2 class="section-title">Podium Juara</h2>
+                <p class="section-desc">Tiga besar dengan performa terbaik</p>
+            </div>
+        </div>
+
+        <div class="podium-container">
+            <div class="podium-grid">
+
+                <!-- 🥈 Juara 2 -->
+                <div class="podium-item podium-silver" data-aos-delay="100">
+                    <div class="podium-card-inner">
+                        <div class="podium-position-badge silver-badge">2ND</div>
+                        <div class="podium-avatar-wrap">
+                            <div class="podium-avatar-photo silver-ring">
+                                <img src="{{ url_for('static', filename='photos/' + podium[1]['foto']) }}" 
+                                     alt="{{ podium[1]['nama'] }}"
+                                     onerror="this.onerror=null; this.parentElement.innerHTML='<span>{{ podium[1]['nama'][0] }}</span>'">
+                            </div>
+                        </div>
+                        <h3 class="podium-name">{{ podium[1]['nama'] }}</h3>
+                        <div class="podium-score-display">
+                            <span class="score-number">{{ podium[1]['skor'] }}</span>
+                            <span class="score-unit">PTS</span>
+                        </div>
+                        <div class="podium-pillar silver-pillar">
+                            <span class="pillar-number">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🥇 Juara 1 -->
+                <div class="podium-item podium-gold" data-aos-delay="0">
+                    <div class="podium-card-inner">
+                        <div class="podium-crown-wrap">
+                            <i class="bi bi-gem"></i>
+                        </div>
+                        <div class="podium-position-badge gold-badge">1ST</div>
+                        <div class="podium-avatar-wrap">
+                            <div class="podium-avatar-photo gold-ring">
+                                <img src="{{ url_for('static', filename='photos/' + podium[0]['foto']) }}" 
+                                     alt="{{ podium[0]['nama'] }}"
+                                     onerror="this.onerror=null; this.parentElement.innerHTML='<span>{{ podium[0]['nama'][0] }}</span>'">
+                            </div>
+                            <div class="podium-glow"></div>
+                        </div>
+                        <h3 class="podium-name">{{ podium[0]['nama'] }}</h3>
+                        <div class="podium-score-display">
+                            <span class="score-number">{{ podium[0]['skor'] }}</span>
+                            <span class="score-unit">PTS</span>
+                        </div>
+                        <div class="podium-pillar gold-pillar">
+                            <span class="pillar-number">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🥉 Juara 3 -->
+                <div class="podium-item podium-bronze" data-aos-delay="200">
+                    <div class="podium-card-inner">
+                        <div class="podium-position-badge bronze-badge">3RD</div>
+                        <div class="podium-avatar-wrap">
+                            <div class="podium-avatar-photo bronze-ring">
+                                <img src="{{ url_for('static', filename='photos/' + podium[2]['foto']) }}" 
+                                     alt="{{ podium[2]['nama'] }}"
+                                     onerror="this.onerror=null; this.parentElement.innerHTML='<span>{{ podium[2]['nama'][0] }}</span>'">
+                            </div>
+                        </div>
+                        <h3 class="podium-name">{{ podium[2]['nama'] }}</h3>
+                        <div class="podium-score-display">
+                            <span class="score-number">{{ podium[2]['skor'] }}</span>
+                            <span class="score-unit">PTS</span>
+                        </div>
+                        <div class="podium-pillar bronze-pillar">
+                            <span class="pillar-number">3</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ===== SKOR BAR CHART ===== -->
+    <section class="chart-section mb-5">
+        <div class="section-header">
+            <div class="section-icon"><i class="bi bi-bar-chart-fill"></i></div>
+            <div>
+                <h2 class="section-title">Visualisasi Skor</h2>
+                <p class="section-desc">Perbandingan skor seluruh peserta</p>
+            </div>
+        </div>
+        <div class="chart-card">
+            {% set max_skor = skor_tertinggi if skor_tertinggi > 0 else 1 %}
+            {% for p in semua_peserta %}
+            {% set pct = (p['skor'] / max_skor * 100)|round|int %}
+            <div class="chart-bar-row">
+                <div class="chart-bar-label">
+                    <span class="chart-rank">#{{ loop.index }}</span>
+                    <span class="chart-name">{{ p['nama'] }}</span>
+                </div>
+                <div class="chart-bar-track">
+                    <div class="chart-bar-fill
+                        {% if loop.index == 1 %}bar-gold
+                        {% elif loop.index == 2 %}bar-silver
+                        {% elif loop.index == 3 %}bar-bronze
+                        {% else %}bar-default{% endif %}"
+                         style="width: {{ pct if pct > 2 else 2 }}%"
+                         data-width="{{ pct if pct > 2 else 2 }}">
+                        <span class="bar-value">{{ p['skor'] }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- ===== FULL RANKING TABLE ===== -->
+    <section class="table-section">
+        <div class="section-header">
+            <div class="section-icon"><i class="bi bi-list-ol"></i></div>
+            <div>
+                <h2 class="section-title">Klasemen Lengkap</h2>
+                <p class="section-desc">Detail peringkat seluruh peserta</p>
+            </div>
+        </div>
+
+        <div class="ranking-table-card">
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th class="th-rank">Rank</th>
+                        <th class="th-name">Peserta</th>
+                        <th class="th-score">Skor</th>
+                        <th class="th-bar">Distribusi</th>
+                        <th class="th-badge">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set max_skor = skor_tertinggi if skor_tertinggi > 0 else 1 %}
+                    {% for p in semua_peserta %}
+                    {% set pct = (p['skor'] / max_skor * 100)|round|int %}
+                    <tr class="ranking-row {% if p['peringkat'] == 1 %}row-champion{% elif p['peringkat'] == 2 %}row-runner{% elif p['peringkat'] == 3 %}row-third{% endif %}">
+                        <td class="td-rank">
+                            {% if p['peringkat'] == 1 %}
+                            <div class="medal medal-gold"><i class="bi bi-trophy-fill"></i></div>
+                            {% elif p['peringkat'] == 2 %}
+                            <div class="medal medal-silver"><i class="bi bi-award-fill"></i></div>
+                            {% elif p['peringkat'] == 3 %}
+                            <div class="medal medal-bronze"><i class="bi bi-award-fill"></i></div>
+                            {% else %}
+                            <div class="medal medal-default">{{ p['peringkat'] }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="td-name">
+                            <div class="participant-cell">
+                                <div class="participant-photo
+                                    {% if p['peringkat'] == 1 %}photo-gold
+                                    {% elif p['peringkat'] == 2 %}photo-silver
+                                    {% elif p['peringkat'] == 3 %}photo-bronze
+                                    {% else %}photo-default{% endif %}">
+                                    <img src="{{ url_for('static', filename='photos/' + p['foto']) }}" 
+                                         alt="{{ p['nama'] }}"
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='{{ p['nama'][0] }}'">
+                                </div>
+                                <div class="participant-info">
+                                    <span class="participant-name">{{ p['nama'] }}</span>
+                                    <span class="participant-id">ID #{{ "%03d"|format(p['id']) }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="td-score">
+                            <span class="score-chip
+                                {% if p['peringkat'] == 1 %}chip-gold
+                                {% elif p['peringkat'] == 2 %}chip-silver
+                                {% elif p['peringkat'] == 3 %}chip-bronze
+                                {% else %}chip-default{% endif %}">
+                                {{ p['skor'] }}
+                            </span>
+                        </td>
+                        <td class="td-bar">
+                            <div class="mini-bar-track">
+                                <div class="mini-bar-fill
+                                    {% if p['peringkat'] == 1 %}bar-gold
+                                    {% elif p['peringkat'] == 2 %}bar-silver
+                                    {% elif p['peringkat'] == 3 %}bar-bronze
+                                    {% else %}bar-default{% endif %}"
+                                     style="width: {{ pct }}%"></div>
+                            </div>
+                        </td>
+                        <td class="td-badge">
+                            {% if p['peringkat'] <= 3 %}
+                            <span class="status-badge status-podium">
+                                <i class="bi bi-star-fill"></i> Podium
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-contestant">
+                                <i class="bi bi-person"></i> Peserta
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

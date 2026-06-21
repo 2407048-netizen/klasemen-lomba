@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="login-card-pro">
+                <!-- Decorative top line -->
+                <div class="login-top-accent"></div>
+
+                <div class="login-body">
+                    <div class="login-icon-wrap">
+                        <div class="login-icon-ring">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="login-title">Welcome Back</h2>
+                    <p class="login-subtitle">Masukkan kredensial admin untuk melanjutkan</p>
+
+                    <form method="POST" action="{{ url_for('login') }}" class="mt-4">
+                        <div class="form-group-pro mb-3">
+                            <label class="form-label-pro">
+                                <i class="bi bi-key-fill me-1"></i>Password
+                            </label>
+                            <div class="input-wrap-pro">
+                                <input
+                                    type="password"
+                                    class="form-control input-pro"
+                                    name="password"
+                                    placeholder="Masukkan password..."
+                                    required
+                                    autofocus
+                                >
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-login-pro w-100 mt-2">
+                            <span class="btn-login-text">
+                                <i class="bi bi-arrow-right-circle-fill me-2"></i>Masuk ke Panel Admin
+                            </span>
+                            <span class="btn-login-shine"></span>
+                        </button>
+                    </form>
+
+                    <div class="login-footer-link">
+                        <a href="{{ url_for('index') }}">
+                            <i class="bi bi-arrow-left-short me-1"></i>Kembali ke Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

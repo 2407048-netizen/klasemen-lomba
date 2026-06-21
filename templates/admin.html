@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel — Kelola Skor{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+
+    <!-- Admin Header -->
+    <div class="admin-header mb-5">
+        <div>
+            <div class="admin-header-badge">
+                <i class="bi bi-shield-check me-1"></i>AUTHENTICATED
+            </div>
+            <h1 class="admin-title">Admin Dashboard</h1>
+            <p class="admin-subtitle">Kelola skor dan foto peserta lomba secara real-time</p>
+        </div>
+        <div class="admin-header-actions">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-pro">
+                <i class="bi bi-eye me-1"></i>Preview
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger-pro">
+                <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Admin Stats -->
+    <section class="stats-row mb-5">
+        <div class="row g-3 g-lg-4">
+            <div class="col-6 col-lg-3">
+                <div class="stat-card stat-card-admin">
+                    <div class="stat-icon stat-icon-blue"><i class="bi bi-people-fill"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Peserta</span>
+                        <span class="stat-value">{{ total_peserta }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card stat-card-admin">
+                    <div class="stat-icon stat-icon-amber"><i class="bi bi-lightning-charge-fill"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Skor</span>
+                        <span class="stat-value">{{ total_skor }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card stat-card-admin">
+                    <div class="stat-icon stat-icon-green"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Tertinggi</span>
+                        <span class="stat-value">{{ skor_tertinggi }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card stat-card-admin">
+                    <div class="stat-icon stat-icon-purple"><i class="bi bi-calculator"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Rata-rata</span>
+                        <span class="stat-value">{{ rata_rata }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TABEL KELOLA PESERTA ===== -->
+    <section class="admin-section mb-5">
+        <div class="section-header">
+            <div class="section-icon"><i class="bi bi-table"></i></div>
+            <div>
+                <h2 class="section-title">Kelola Peserta</h2>
+                <p class="section-desc">Update skor dan upload foto peserta</p>
+            </div>
+        </div>
+
+        <div class="admin-card-pro">
+            <div class="table-responsive">
+                <table class="admin-table-pro">
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th style="width:120px" class="text-center">Foto Peserta</th>
+                            <th>Peserta</th>
+                            <th style="width:90px" class="text-center">Rank</th>
+                            <th style="width:200px" class="text-center">Skor</th>
+                            <th style="width:200px" class="text-center">Quick Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in peserta %}
+                        <tr class="admin-row">
+                            <td class="text-center text-muted">{{ loop.index }}</td>
+                            
+                            <!-- ===== KOLOM FOTO (FORM TERPISAH) ===== -->
+                            <td class="text-center">
+                                <div class="admin-photo-wrap">
+                                    <img src="{{ url_for('static', filename='photos/' + p['foto']) }}" 
+                                         alt="{{ p['nama'] }}" 
+                                         class="admin-photo"
+                                         onerror="this.src='{{ url_for('static', filename='photos/default.png') }}'">
+                                    
+                                    <!-- Form Upload Foto (TERPISAH, tidak nested) -->
+                                    <form method="POST" 
+                                          action="{{ url_for('upload_foto', peserta_id=p['id']) }}" 
+                                          enctype="multipart/form-data" 
+                                          class="upload-overlay-form"
+                                          id="uploadForm_{{ p['id'] }}">
+                                        <label for="fileInput_{{ p['id'] }}" class="upload-btn-overlay">
+                                            <i class="bi bi-camera-fill"></i>
+                                            <span>Upload</span>
+                                        </label>
+                                        <input type="file" 
+                                               id="fileInput_{{ p['id'] }}" 
+                                               name="foto" 
+                                               class="upload-input-hidden" 
+                                               accept="image/*"
+                                               onchange="document.getElementById('uploadForm_{{ p['id'] }}').submit()">
+                                    </form>
+                                    
+                                    <!-- Tombol Hapus -->
+                                    {% if p['foto'] != 'default.png' %}
+                                    <form method="POST" 
+                                          action="{{ url_for('hapus_foto', peserta_id=p['id']) }}" 
+                                          class="delete-overlay-form">
+                                        <button type="submit" class="btn-delete-overlay" 
+                                                onclick="return confirm('Hapus foto {{ p['nama'] }}?');">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            
+                            <!-- ===== KOLOM NAMA ===== -->
+                            <td>
+                                <div class="participant-cell">
+                                    <div class="participant-avatar
+                                        {% if p['peringkat'] == 1 %}av-gold
+                                        {% elif p['peringkat'] == 2 %}av-silver
+                                        {% elif p['peringkat'] == 3 %}av-bronze
+                                        {% else %}av-default{% endif %}">
+                                        {{ p['nama'][0] }}
+                                    </div>
+                                    <span class="participant-name text-white">{{ p['nama'] }}</span>
+                                </div>
+                            </td>
+                            
+                            <!-- ===== KOLOM RANK ===== -->
+                            <td class="text-center">
+                                <span class="rank-pill">{{ p['peringkat'] }}</span>
+                            </td>
+                            
+                            <!-- ===== KOLOM SKOR (FORM TERPISAH) ===== -->
+                            <td>
+                                <div class="skor-input-group">
+                                    <button type="button" class="btn btn-qty btn-qty-minus" data-id="{{ p['id'] }}" data-amount="-5">
+                                        <i class="bi bi-dash"></i>5
+                                    </button>
+                                    <input type="number" 
+                                           class="form-control skor-input" 
+                                           id="skor_{{ p['id'] }}" 
+                                           value="{{ p['skor'] }}" 
+                                           min="0">
+                                    <button type="button" class="btn btn-qty btn-qty-plus" data-id="{{ p['id'] }}" data-amount="5">
+                                        <i class="bi bi-plus"></i>5
+                                    </button>
+                                </div>
+                            </td>
+                            
+                            <!-- ===== KOLOM QUICK ACTIONS ===== -->
+                            <td>
+                                <div class="quick-btns d-flex gap-1 justify-content-center">
+                                    <button type="button" class="btn btn-quick btn-quick-10" data-id="{{ p['id'] }}" data-amount="10">+10</button>
+                                    <button type="button" class="btn btn-quick btn-quick-25" data-id="{{ p['id'] }}" data-amount="25">+25</button>
+                                    <button type="button" class="btn btn-quick btn-quick-50" data-id="{{ p['id'] }}" data-amount="50">+50</button>
+                                    <button type="button" class="btn btn-quick btn-quick-neg" data-id="{{ p['id'] }}" data-amount="-10">-10</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Tombol Simpan Semua Skor (FORM TERPISAH) -->
+            <div class="admin-card-footer">
+                <form method="POST" action="{{ url_for('update_all_skor') }}" id="saveAllForm" style="margin:0;">
+                    <!-- Hidden inputs untuk skor -->
+                    {% for p in peserta %}
+                    <input type="hidden" name="skor_{{ p['id'] }}" id="hidden_skor_{{ p['id'] }}" value="{{ p['skor'] }}">
+                    {% endfor %}
+                    <button type="button" class="btn btn-save-all" onclick="syncAndSubmit()">
+                        <i class="bi bi-check2-all me-2"></i>Simpan Semua Perubahan Skor
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DANGER ZONE ===== -->
+    <section class="admin-section">
+        <div class="danger-card">
+            <div class="danger-header">
+                <i class="bi bi-exclamation-octagon-fill"></i>
+                <h5 class="mb-0 text-white">Danger Zone</h5>
+            </div>
+            <div class="danger-body">
+                <div>
+                    <p class="text-white-50 mb-1 fw-semibold">Reset Semua Skor</p>
+                    <p class="text-white-50 small mb-0">Mengembalikan seluruh skor peserta menjadi 0. Tidak dapat dibatalkan.</p>
+                </div>
+                <form method="POST" action="{{ url_for('reset_skor') }}" onsubmit="return confirm('PERINGATAN: Yakin ingin mereset SEMUA skor ke 0?');">
+                    <button type="submit" class="btn btn-danger-outline-pro">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset All
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Sync skor dari input ke hidden input, lalu submit
+    function syncAndSubmit() {
+        {% for p in peserta %}
+        const skor_{{ p['id'] }} = document.getElementById('skor_{{ p['id'] }}').value;
+        document.getElementById('hidden_skor_{{ p['id'] }}').value = skor_{{ p['id'] }};
+        {% endfor %}
+        document.getElementById('saveAllForm').submit();
+    }
+
+    // Quick action buttons
+    document.querySelectorAll('.btn-qty, .btn-quick').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const amount = parseInt(this.dataset.amount);
+            const input = document.getElementById('skor_' + id);
+            let val = parseInt(input.value) || 0;
+            val += amount;
+            input.value = val < 0 ? 0 : val;
+
+            // Flash animation
+            input.classList.add('input-flash');
+            setTimeout(() => input.classList.remove('input-flash'), 400);
+        });
+    });
+</script>
+{% endblock %}
