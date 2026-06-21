@@ -9,9 +9,6 @@ env/
 ENV/
 .venv
 
-# Database (jangan commit database lokal)
-database.db
-
 # IDE
 .vscode/
 .idea/

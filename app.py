@@ -356,8 +356,24 @@ def logout():
 # KONFIGURASI UNTUK VERCEL
 # ============================
 
+# ============================
+# KONFIGURASI UNTUK VERCEL
+# ============================
+
 # Tambahkan ProxyFix untuk Vercel
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+# ============================
+# JALANKAN APLIKASI
+# ============================
+if __name__ == "__main__":
+    # Development lokal
+    init_db()
+    app.run(debug=True, host="0.0.0.0", port=5000)
+else:
+    # Saat di-import oleh Vercel
+    setup_vercel_db()
+    init_db()
 
 # ============================
 # JALANKAN APLIKASI
